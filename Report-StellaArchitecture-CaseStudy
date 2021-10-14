@@ -1,0 +1,958 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee"/>
+		<name>FIT5094_Assignment2_ Tutorial3_30535808</name>
+		<uuid>e988324e-f63e-4ccc-b37c-0aaaa19898db</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="1.9.5" isee:build_number="2097" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:sim_duration="1.5" isee:simulation_delay="0.0375" isee:restore_on_start="false" method="Euler" time_units="Year" isee:instantaneous_flows="false">
+		<start>0</start>
+		<stop>40</stop>
+		<dt>1</dt>
+	</sim_specs>
+	<isee:prefs show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" saved_runs="5" keep="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" observer_start_page="home_page" enabled="false"/>
+	<isee:time_formats default_format="Builtin">
+		<isee:time_format name="Builtin" type="adaptive"/>
+	</isee:time_formats>
+	<default_format/>
+	<model_units>
+		<unit name="People">
+			<eqn/>
+			<alias>person</alias>
+			<alias>persons</alias>
+		</unit>
+		<unit name="US Dollars">
+			<eqn/>
+			<alias>USD</alias>
+			<alias>$</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+	</model_units>
+	<model>
+		<variables>
+			<stock name="Priority Member">
+				<eqn>0</eqn>
+				<inflow>Basic_to_Priority</inflow>
+				<outflow>Priority_to_Priority_Plus</outflow>
+				<outflow>&quot;Discontinuation_Rate_(Priority)&quot;</outflow>
+				<non_negative/>
+				<units>People</units>
+			</stock>
+			<stock name="Priority Plus Member">
+				<eqn>0</eqn>
+				<inflow>Priority_to_Priority_Plus</inflow>
+				<outflow>&quot;Discontinuation_Rate_(Priority_Plus)&quot;</outflow>
+				<non_negative/>
+				<units>People</units>
+			</stock>
+			<flow name="Basic to Priority">
+				<eqn>IF(Time_Factor&gt;10) THEN (Basic_Member) ELSE 0</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Priority to Priority Plus">
+				<eqn>IF(Time_Factor&gt;25) THEN (Priority_Member) ELSE 0</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Customer Acquisition Rate">
+				<eqn>Marketing_Acquired_Customers+Potential_Word_of_Mouth_Members</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<aux name="Annual Marketing Spend">
+				<eqn>250000</eqn>
+				<units>$</units>
+			</aux>
+			<aux name="Marketing Impact Factor">
+				<eqn>0.002</eqn>
+			</aux>
+			<aux name="Marketing Acquired Customers">
+				<eqn>Marketing_Impact_Factor*Annual_Marketing_Spend*&quot;Economic_factor_(Market_Spend)&quot;</eqn>
+				<units>People</units>
+			</aux>
+			<aux name="Economic factor\n(Market Spend)">
+				<eqn>TIME</eqn>
+				<gf type="discrete">
+					<xscale min="0" max="40"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,1,1,1.5,1.5,0.8,0.8,2,2,1,1,1.5,1.5,0.8,0.8,2,2,1,1,1.5,1.5,0.8,0.8,2,2,1,1,1.5,1.5,0.8,0.8,2,2,1,1,1.5,1.5,0.8,0.8,2,2</ypts>
+				</gf>
+			</aux>
+			<flow name="Discontinuation Rate (Basic)">
+				<eqn>Basic_Member*0.64/Loyalty_Factor</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Discontinuation Rate (Priority)">
+				<eqn>Priority_Member*0.42/Loyalty_Factor</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Discontinuation Rate (Priority Plus)">
+				<eqn>Priority_Plus_Member*0.27/Loyalty_Factor</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<aux name="Loyalty Factor">
+				<eqn>TIME</eqn>
+				<gf type="discrete">
+					<xscale min="0" max="40"/>
+					<yscale min="0" max="100"/>
+					<ypts>1,1,1,1,1,1,1,1,1,1,1,1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25,1.25,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5</ypts>
+				</gf>
+			</aux>
+			<aux name="No of Members to\ncover Variable Cost">
+				<eqn>No_of_Service_Representatives*5</eqn>
+			</aux>
+			<aux name="No of Service Representatives">
+				<eqn>TIME</eqn>
+				<gf type="discrete">
+					<xscale min="0" max="40"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,35,35,35,35,35,35,35,35,35,35,40,40,40,40,40,40,40,40,40,40,50,50,50,50,50,50,50,50,50,50,65,65,65,65,65,65,65,65,65,65</ypts>
+				</gf>
+			</aux>
+			<aux name="Profitable Load">
+				<eqn>No_of_Members_to_cover_Variable_Cost+No_of_Members_to_cover_Fixed_Cost</eqn>
+				<units>People</units>
+			</aux>
+			<aux name="Potential Word of Mouth\nMembers">
+				<eqn>&quot;Total_no._of_Members&quot;*&quot;Word_of_Mouth_(Factor)&quot;</eqn>
+			</aux>
+			<aux name="Total no. of Members">
+				<eqn>Priority_Plus_Member+Priority_Member+Basic_Member</eqn>
+			</aux>
+			<aux name="Word of Mouth (Factor)">
+				<eqn>1/500</eqn>
+			</aux>
+			<stock name="Basic Member">
+				<eqn>0</eqn>
+				<inflow>Customer_Acquisition_Rate</inflow>
+				<outflow>Basic_to_Priority</outflow>
+				<outflow>&quot;Discontinuation_Rate_(Basic)&quot;</outflow>
+				<non_negative/>
+				<units>People</units>
+			</stock>
+			<aux name="Time Factor">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="0" max="40"/>
+					<yscale min="0" max="100"/>
+					<ypts>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40</ypts>
+				</gf>
+			</aux>
+			<aux name="EIC Optimal Load\n(Customer Satisfaction)">
+				<eqn>No_of_Service_Representatives*30</eqn>
+				<units>People</units>
+			</aux>
+			<aux name="Total Discontinuations">
+				<eqn>&quot;Discontinuation_Rate_(Priority_Plus)&quot;+&quot;Discontinuation_Rate_(Priority)&quot;+&quot;Discontinuation_Rate_(Basic)&quot;</eqn>
+			</aux>
+			<aux name="No of Members to\ncover Fixed Cost">
+				<eqn>600</eqn>
+				<units>People</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="blue" background="white" font_size="9pt" isee:transparent="false"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="1056" page_height="816" isee:page_cols="2" isee:page_rows="2" isee:popup_graphs_are_comparative="true" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom"/>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="blue" background="white" font_size="9pt" isee:transparent="false"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<stock x="644" y="190" name="Priority Member"/>
+				<stock x="810" y="190" name="Priority Plus Member"/>
+				<flow x="541" y="190" name="Basic to Priority">
+					<pts>
+						<pt x="472.5" y="190"/>
+						<pt x="621.5" y="190"/>
+					</pts>
+				</flow>
+				<flow x="721" y="190" name="Priority to Priority Plus">
+					<pts>
+						<pt x="666.5" y="190"/>
+						<pt x="787.5" y="190"/>
+					</pts>
+				</flow>
+				<flow x="354.75" y="191" name="Customer Acquisition Rate">
+					<pts>
+						<pt x="282" y="191"/>
+						<pt x="427.5" y="191"/>
+					</pts>
+				</flow>
+				<aux x="240" y="20" name="Annual Marketing Spend"/>
+				<aux x="116" y="20" name="Marketing Impact Factor"/>
+				<aux x="299" y="114" name="Marketing Acquired Customers"/>
+				<connector uid="1" angle="332.812">
+					<from>Marketing_Impact_Factor</from>
+					<to>Marketing_Acquired_Customers</to>
+				</connector>
+				<connector uid="2" angle="302.115">
+					<from>Annual_Marketing_Spend</from>
+					<to>Marketing_Acquired_Customers</to>
+				</connector>
+				<aux x="134" y="91" name="Economic factor\n(Market Spend)"/>
+				<connector uid="3" angle="303.547">
+					<from>&quot;Economic_factor_(Market_Spend)&quot;</from>
+					<to>Marketing_Acquired_Customers</to>
+				</connector>
+				<connector uid="4" angle="321.147">
+					<from>Marketing_Acquired_Customers</from>
+					<to>Customer_Acquisition_Rate</to>
+				</connector>
+				<flow x="450" y="288.75" name="Discontinuation Rate (Basic)">
+					<pts>
+						<pt x="450" y="204.5"/>
+						<pt x="450" y="394"/>
+					</pts>
+				</flow>
+				<flow x="645" y="292.25" name="Discontinuation Rate (Priority)">
+					<pts>
+						<pt x="645" y="207.5"/>
+						<pt x="645" y="398"/>
+					</pts>
+				</flow>
+				<flow label_side="bottom" x="812" y="291.25" name="Discontinuation Rate (Priority Plus)">
+					<pts>
+						<pt x="812" y="207.5"/>
+						<pt x="812" y="396"/>
+					</pts>
+				</flow>
+				<connector uid="5" angle="311.348">
+					<from>Priority_Member</from>
+					<to>&quot;Discontinuation_Rate_(Priority)&quot;</to>
+				</connector>
+				<connector uid="6" angle="321.843">
+					<from>Priority_Plus_Member</from>
+					<to>&quot;Discontinuation_Rate_(Priority_Plus)&quot;</to>
+				</connector>
+				<aux x="541" y="442" name="Loyalty Factor"/>
+				<aux x="837.333" y="95.3333" name="No of Members to\ncover Variable Cost"/>
+				<aux x="907.25" y="42.6667" name="No of Service Representatives"/>
+				<connector uid="7" angle="168.69">
+					<from>No_of_Service_Representatives</from>
+					<to>No_of_Members_to_cover_Variable_Cost</to>
+				</connector>
+				<aux x="955.333" y="99.3333" name="Profitable Load"/>
+				<connector uid="8" angle="1.84761">
+					<from>No_of_Members_to_cover_Variable_Cost</from>
+					<to>Profitable_Load</to>
+				</connector>
+				<aux x="160" y="315" name="Potential Word of Mouth\nMembers"/>
+				<aux label_side="left" label_angle="225" x="187" y="499" name="Total no. of Members"/>
+				<connector uid="9" angle="245.376">
+					<from>Priority_Member</from>
+					<to>&quot;Total_no._of_Members&quot;</to>
+				</connector>
+				<connector uid="10" angle="253.072">
+					<from>Priority_Plus_Member</from>
+					<to>&quot;Total_no._of_Members&quot;</to>
+				</connector>
+				<connector uid="11" angle="98.348">
+					<from>&quot;Total_no._of_Members&quot;</from>
+					<to>Potential_Word_of_Mouth_Members</to>
+				</connector>
+				<connector uid="12" angle="45">
+					<from>Potential_Word_of_Mouth_Members</from>
+					<to>Customer_Acquisition_Rate</to>
+				</connector>
+				<aux x="61" y="372" name="Word of Mouth (Factor)"/>
+				<connector uid="13" angle="4.57392">
+					<from>&quot;Word_of_Mouth_(Factor)&quot;</from>
+					<to>Potential_Word_of_Mouth_Members</to>
+				</connector>
+				<connector uid="14" angle="27.3499">
+					<from>Priority_Member</from>
+					<to>Priority_to_Priority_Plus</to>
+				</connector>
+				<stock x="450" y="187" name="Basic Member"/>
+				<connector uid="15" angle="261.027">
+					<from>Basic_Member</from>
+					<to>&quot;Total_no._of_Members&quot;</to>
+				</connector>
+				<connector uid="16" angle="308.29">
+					<from>Basic_Member</from>
+					<to>&quot;Discontinuation_Rate_(Basic)&quot;</to>
+				</connector>
+				<connector uid="17" angle="11.0409">
+					<from>Basic_Member</from>
+					<to>Basic_to_Priority</to>
+				</connector>
+				<aux x="566" y="33" name="Time Factor"/>
+				<connector uid="18" angle="273.576">
+					<from>Time_Factor</from>
+					<to>Basic_to_Priority</to>
+				</connector>
+				<connector uid="19" angle="2.2026">
+					<from>Time_Factor</from>
+					<to>Priority_to_Priority_Plus</to>
+				</connector>
+				<connector uid="20" angle="90">
+					<from>Loyalty_Factor</from>
+					<to>&quot;Discontinuation_Rate_(Basic)&quot;</to>
+				</connector>
+				<connector uid="21" angle="80.5377">
+					<from>Loyalty_Factor</from>
+					<to>&quot;Discontinuation_Rate_(Priority)&quot;</to>
+				</connector>
+				<connector uid="22" angle="6.1155">
+					<from>Loyalty_Factor</from>
+					<to>&quot;Discontinuation_Rate_(Priority_Plus)&quot;</to>
+				</connector>
+				<aux x="763.667" y="28" name="EIC Optimal Load\n(Customer Satisfaction)"/>
+				<connector uid="23" angle="174.168">
+					<from>No_of_Service_Representatives</from>
+					<to>&quot;EIC_Optimal_Load_(Customer_Satisfaction)&quot;</to>
+				</connector>
+				<aux x="750" y="506.25" name="Total Discontinuations"/>
+				<connector uid="24" angle="12.9946">
+					<from>&quot;Discontinuation_Rate_(Basic)&quot;</from>
+					<to>Total_Discontinuations</to>
+				</connector>
+				<connector uid="25" angle="270">
+					<from>&quot;Discontinuation_Rate_(Priority)&quot;</from>
+					<to>Total_Discontinuations</to>
+				</connector>
+				<connector uid="26" angle="315.868">
+					<from>&quot;Discontinuation_Rate_(Priority_Plus)&quot;</from>
+					<to>Total_Discontinuations</to>
+				</connector>
+				<aux label_side="bottom" x="1021.5" y="51" name="No of Members to\ncover Fixed Cost"/>
+				<connector uid="27" angle="216.147">
+					<from>No_of_Members_to_cover_Fixed_Cost</from>
+					<to>Profitable_Load</to>
+				</connector>
+				<stacked_container uid="28" x="989" y="187" width="403" height="443" minimized="true">
+					<table width="403" height="443">
+						<item type="time"/>
+						<item>
+							<entity name="Profitable_Load"/>
+						</item>
+						<item>
+							<entity name='"Total_no._of_Members"'/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="29" x="1164" y="275.5" minimized="true">
+					<graph width="350" height="250" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name='"Total_no._of_Members"'/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Profitable_Load"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="30" x="672" y="17" width="510" height="576" minimized="true">
+					<table width="510" height="576">
+						<item type="time"/>
+						<item>
+							<entity name='"EIC_Optimal_Load_(Customer_Satisfaction)"'/>
+						</item>
+						<item>
+							<entity name='"Total_no._of_Members"'/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="31" x="810" y="142" minimized="true">
+					<graph width="350" height="250" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name='"EIC_Optimal_Load_(Customer_Satisfaction)"'/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name='"Total_no._of_Members"'/>
+						</plot>
+					</graph>
+				</stacked_container>
+			</view>
+			<view background="#AAAAFF" page_width="1066" page_height="600" home_view="true" type="interface">
+				<style/>
+				<gauge z_index="1" needle_color="#55007F" bar_progress_color="aqua" appearance="radial" uid="32" x="4.5005" y="367.17" width="173.444" height="221.333" min="0" max="1000">
+					<format precision="1" scale_by="1" delimit_000s="true"/>
+					<entity name="Basic_Member"/>
+					<zones>
+						<zone type="normal" color="white" max="33"/>
+						<zone type="caution" color="white" min="33" max="67"/>
+						<zone type="panic" color="white" min="67"/>
+					</zones>
+				</gauge>
+				<gauge z_index="2" needle_color="#00007F" bar_progress_color="#FF85FF" appearance="radial" uid="33" x="343.557" y="367.17" width="173.44" height="221.33" min="0" max="1000">
+					<format precision="1" scale_by="1" delimit_000s="true"/>
+					<entity name="Priority_Member"/>
+					<zones>
+						<zone type="normal" color="white" max="33"/>
+						<zone type="caution" color="white" min="33" max="67"/>
+						<zone type="panic" color="white" min="67"/>
+					</zones>
+				</gauge>
+				<gauge z_index="3" needle_color="#550000" bar_color="#EEEEEE" bar_progress_color="#FF4040" appearance="radial" uid="34" x="685.556" y="367.17" width="173.44" height="221.33" min="0" max="1000">
+					<format precision="1" scale_by="1" delimit_000s="true"/>
+					<entity name="Priority_Plus_Member"/>
+					<zones>
+						<zone type="normal" color="white" max="33"/>
+						<zone type="caution" color="white" min="33" max="67"/>
+						<zone type="panic" color="white" min="67"/>
+					</zones>
+				</gauge>
+				<stacked_container uid="35" x="66.89" y="180.305" width="276.667" height="239.056">
+					<graph axis_color="black" isee:graph_area_color="white" legend_position="none" width="276.667" height="239.056" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" x_axis_title="Basic Member" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="#55007F" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Basic_Member"/>
+						</plot>
+						<plot color="yellow" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true"/>
+						<plot color="#00AA00" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true"/>
+						<plot color="#FF007F" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true"/>
+						<plot color="#55007F" isee:keep_zero_visible="true" pen_width="1" index="0" right_axis="true" show_y_axis="true"/>
+					</graph>
+				</stacked_container>
+				<isee:time_slider color="#00AA7F" interactive="true" uid="36" x="281.556" y="115.056" width="445.222" height="38"/>
+				<numeric_display color="#AAAAFF" font_weight="bold" font_color="white" font_family="Bodoni MT Condensed" font_size="24pt" isee:transparent="false" uid="37" x="282.334" y="70" width="443.666" height="46.056" isee:immediately_update_on_user_input="true" retain_ending_value="true" isee:navigate_to="false" show_name="true">
+					<format precision="1" scale_by="1" delimit_000s="true"/>
+					<entity name='"Total_no._of_Members"'/>
+				</numeric_display>
+				<stacked_container uid="38" x="399.224" y="180.31" width="276.67" height="239.06">
+					<graph width="276.67" height="239.06" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Priority_Member"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="39" x="745.778" y="180.31" width="276.67" height="239.06">
+					<graph width="276.67" height="239.06" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="#550000" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Priority_Plus_Member"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<button background="#FFAA00" font_weight="bold" font_color="white" transparent="false" isee:highlight_on_hover="true" isee:highlight_color="#F4E31E" label="RESET" uid="40" x="885" y="47" width="72" height="34">
+					<actions>
+						<action>restore_all_inputs</action>
+					</actions>
+				</button>
+				<button background="#55007F" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#AA55FF" label="SEE STORY" uid="41" x="969" y="97.5" width="72" height="37">
+					<actions>
+						<action target="none">navigate</action>
+					</actions>
+				</button>
+				<button background="#AA0000" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#D90000" label="GO LIVE" uid="42" x="885" y="98" width="72" height="36">
+					<actions>
+						<action>start_stella_live</action>
+					</actions>
+				</button>
+				<button background="#005500" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#ACF3A7" label="RUN" uid="43" x="969" y="46.5" width="72" height="35">
+					<actions>
+						<action>start</action>
+					</actions>
+				</button>
+				<text_box text_align="center" font_family="Bodoni MT Condensed" font_size="48pt" appearance="transparent" uid="44" x="139" y="6" width="723" height="58">EIC (Elite Insurance Company) - Dashboard</text_box>
+			</view>
+			<view background="#AAAAFF" page_width="1066" page_height="600" type="interface">
+				<style/>
+				<text_box text_align="center" font_family="Bodoni MT Condensed" font_size="48pt" appearance="transparent" uid="45" x="167" y="25" width="723" height="58">EIC (Elite Insurance Company) - Dashboard</text_box>
+				<button background="#FFAA00" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#FFDA06" label="RESET" uid="46" x="895" y="70" width="72" height="34">
+					<actions>
+						<action>restore_all_inputs</action>
+					</actions>
+				</button>
+				<button background="#55007F" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#9600E1" label="SEE STORY" uid="47" x="979" y="120.5" width="72" height="37">
+					<actions>
+						<action target="none">navigate</action>
+					</actions>
+				</button>
+				<button background="#AA0000" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#FF5500" label="GO LIVE" uid="48" x="895" y="121" width="72" height="36">
+					<actions>
+						<action>start_stella_live</action>
+					</actions>
+				</button>
+				<button background="#005500" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#00A600" label="RUN" uid="49" x="979" y="69.5" width="72" height="35">
+					<actions>
+						<action>start</action>
+					</actions>
+				</button>
+				<knob z_index="1" color="#00007F" uid="50" x="100" y="348" width="135" height="146" increment="250000" min="0" max="1000000" isee:navigate_to="false" show_name="true">
+					<entity name="Annual_Marketing_Spend"/>
+					<reset_to after="never">250000</reset_to>
+				</knob>
+				<stacked_container uid="51" x="19" y="113.5" width="333" height="239">
+					<graph width="333" height="239" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="How Annual Marketing spend affects customers acquired" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Marketing_Acquired_Customers"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="52" x="367" y="113.5" width="333" height="239">
+					<graph width="333" height="239" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Profitable load vs Variable and Fixed cost" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Profitable_Load"/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="No_of_Members_to_cover_Variable_Cost"/>
+						</plot>
+						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+							<entity name="No_of_Members_to_cover_Fixed_Cost"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<knob z_index="2" color="#00007F" uid="53" x="473" y="348" width="135" height="146" increment="50" min="0" max="1000" isee:navigate_to="false" show_name="true">
+					<entity name="No_of_Members_to_cover_Fixed_Cost"/>
+					<reset_to after="never">600</reset_to>
+				</knob>
+				<stacked_container uid="54" x="723" y="239" width="326" height="339">
+					<graph width="326" height="339" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Optimal load vs No of representatives" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name='"EIC_Optimal_Load_(Customer_Satisfaction)"'/>
+						</plot>
+						<plot color="red" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="No_of_Service_Representatives"/>
+						</plot>
+					</graph>
+				</stacked_container>
+			</view>
+			<view background="#AAAAFF" page_width="1066" page_height="600" type="interface">
+				<style/>
+				<text_box text_align="center" font_family="Bodoni MT Condensed" font_size="48pt" appearance="transparent" uid="55" x="166" y="15" width="723" height="58">EIC (Elite Insurance Company) - Dashboard</text_box>
+				<button background="#FFAA00" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#FFDA05" label="RESET" uid="56" x="888" y="66" width="72" height="34">
+					<actions>
+						<action>restore_all_inputs</action>
+					</actions>
+				</button>
+				<button background="#55007F" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#AAAAFF" label="SEE STORY" uid="57" x="972" y="116.5" width="72" height="37">
+					<actions>
+						<action target="none">navigate</action>
+					</actions>
+				</button>
+				<button background="#AA0000" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#FF5500" label="GO LIVE" uid="58" x="888" y="117" width="72" height="36">
+					<actions>
+						<action>start_stella_live</action>
+					</actions>
+				</button>
+				<button background="#005500" font_weight="bold" font_color="white" isee:highlight_on_hover="true" isee:highlight_color="#85C8AC" label="RUN" uid="59" x="972" y="65.5" width="72" height="35">
+					<actions>
+						<action>start</action>
+					</actions>
+				</button>
+				<stacked_container uid="60" x="15.5" y="77.5" width="507" height="225">
+					<graph width="507" height="225" type="bar" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" title="Comparison of Discontinuation rates" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="#AAAAFF" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Total_Discontinuations"/>
+						</plot>
+						<plot color="#55007F" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name='"Discontinuation_Rate_(Basic)"'/>
+						</plot>
+						<plot color="blue" pen_style="dashed" isee:keep_zero_visible="true" pen_width="1" index="2" show_y_axis="true">
+							<entity name='"Discontinuation_Rate_(Priority)"'/>
+						</plot>
+						<plot color="#550000" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
+							<entity name='"Discontinuation_Rate_(Priority_Plus)"'/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="61" x="17.5" y="310" width="503" height="281">
+					<table background="#BCC0FF" isee:use_alternate_row_colors="false" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_family="Bodoni MT Condensed" header_font_size="16pt" width="503" height="281" title="Discontinuation Rates">
+						<item type="time"/>
+						<item>
+							<entity name='"Discontinuation_Rate_(Basic)"'/>
+						</item>
+						<item>
+							<entity name='"Discontinuation_Rate_(Priority)"'/>
+						</item>
+						<item>
+							<entity name='"Discontinuation_Rate_(Priority_Plus)"'/>
+						</item>
+					</table>
+				</stacked_container>
+				<stacked_container uid="62" x="607.5" y="173" width="398.5" height="299">
+					<graph width="398.5" height="299" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+						<plot color="#00007F" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Total_Discontinuations"/>
+						</plot>
+						<plot color="#AA0000" pen_style="dot_dashed" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Customer_Acquisition_Rate"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<knob color="#00007F" uid="63" x="710" y="484" width="117" height="105" increment="100" min="0" max="1000" isee:navigate_to="false" show_name="true">
+					<entity name="Marketing_Acquired_Customers"/>
+					<reset_to after="never">0</reset_to>
+				</knob>
+				<knob color="#00007F" uid="64" x="839" y="484" width="117" height="105" increment="3" min="0" max="20" isee:navigate_to="false" show_name="true">
+					<entity name="Potential_Word_of_Mouth_Members"/>
+					<reset_to after="never">0</reset_to>
+				</knob>
+			</view>
+			<isee:templates>
+				<view background="#AAAAFF" page_width="1066" page_height="600" type="template">
+					<style/>
+				</view>
+			</isee:templates>
+			<isee:stories>
+				<isee:story uid="65" name="Story 1">
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view uid="66" x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="533" center_y="300" locked_view="true" transparent="true" use_visible_list="true">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Priority_Plus_Member"/>
+								<entity name="Basic_Member"/>
+								<entity name="Basic_to_Priority"/>
+								<item uid="17"/>
+								<item uid="18"/>
+								<entity name="Priority_to_Priority_Plus"/>
+								<item uid="14"/>
+								<entity name="Customer_Acquisition_Rate"/>
+								<entity name="Priority_Member"/>
+								<item uid="19"/>
+								<entity name="Time_Factor"/>
+							</isee:visible_list>
+							<isee:highlight_list/>
+						</isee:model_view>
+						<isee:annotation launcher_label="" show_by_default="true" hide_launcher="true" uid="67" x="534" y="271">
+							<popup x="449.5" y="270" width="372" height="79">
+								<text>Step 1 of the EIC model is to model the main stocks
+Here we have 3 stocks, one for each membership level at EIC.
+
+These stocks flow from one to another using the time factor.</text>
+							</popup>
+						</isee:annotation>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view uid="68" x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="533" center_y="300" locked_view="true" transparent="true" use_visible_list="true">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Customer_Acquisition_Rate"/>
+								<item uid="14"/>
+								<entity name="Priority_to_Priority_Plus"/>
+								<item uid="17"/>
+								<item uid="18"/>
+								<entity name="Basic_to_Priority"/>
+								<entity name="Time_Factor"/>
+								<entity name="Marketing_Acquired_Customers"/>
+								<entity name="Annual_Marketing_Spend"/>
+								<item uid="1"/>
+								<entity name="Priority_Plus_Member"/>
+								<entity name="Basic_Member"/>
+								<item uid="2"/>
+								<item uid="4"/>
+								<entity name='"Economic_factor_(Market_Spend)"'/>
+								<entity name="Priority_Member"/>
+								<entity name="Marketing_Impact_Factor"/>
+								<item uid="19"/>
+								<item uid="3"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="Marketing_Acquired_Customers"/>
+								<entity name="Annual_Marketing_Spend"/>
+								<item uid="1"/>
+								<item uid="2"/>
+								<item uid="4"/>
+								<entity name='"Economic_factor_(Market_Spend)"'/>
+								<entity name="Marketing_Impact_Factor"/>
+								<item uid="3"/>
+							</isee:highlight_list>
+						</isee:model_view>
+						<isee:annotation launcher_label="" show_by_default="true" hide_launcher="true" uid="69" x="88" y="214">
+							<popup x="28.5" y="166" width="230" height="167">
+								<text>Customers at EIC are acquire by 
+
+1. Marketing
+
+We start with modeling the business requirements
+of customers acquired through marketing efforts of EIC 
+given an economic factor.
+</text>
+							</popup>
+						</isee:annotation>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view uid="70" x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="533" center_y="300" locked_view="true" transparent="true" use_visible_list="true">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<item uid="14"/>
+								<item uid="1"/>
+								<entity name="Priority_Plus_Member"/>
+								<entity name="Annual_Marketing_Spend"/>
+								<entity name="Basic_to_Priority"/>
+								<entity name="Basic_Member"/>
+								<item uid="2"/>
+								<entity name="Potential_Word_of_Mouth_Members"/>
+								<item uid="17"/>
+								<item uid="18"/>
+								<item uid="11"/>
+								<item uid="4"/>
+								<entity name='"Economic_factor_(Market_Spend)"'/>
+								<entity name='"Total_no._of_Members"'/>
+								<entity name="Customer_Acquisition_Rate"/>
+								<entity name="Priority_Member"/>
+								<entity name="Marketing_Impact_Factor"/>
+								<item uid="3"/>
+								<entity name='"Word_of_Mouth_(Factor)"'/>
+								<item uid="19"/>
+								<item uid="13"/>
+								<entity name="Priority_to_Priority_Plus"/>
+								<entity name="Marketing_Acquired_Customers"/>
+								<entity name="Time_Factor"/>
+								<item uid="12"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="Potential_Word_of_Mouth_Members"/>
+								<entity name='"Total_no._of_Members"'/>
+								<item uid="11"/>
+								<entity name='"Word_of_Mouth_(Factor)"'/>
+								<item uid="13"/>
+								<item uid="12"/>
+							</isee:highlight_list>
+						</isee:model_view>
+						<isee:annotation launcher_label="" show_by_default="true" hide_launcher="true" uid="71" x="297" y="431">
+							<popup x="236.5" y="336" width="319" height="136">
+								<text>Customers at EIC are acquire by 
+
+2. Word of Mouth of existing customers
+
+We start with modeling the business requirements
+of customers acquired through Word of mouth from existing EIC 
+customers given a word of mouth factor.
+</text>
+							</popup>
+						</isee:annotation>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view uid="72" x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="533" center_y="300" locked_view="true" transparent="true" use_visible_list="true">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Loyalty_Factor"/>
+								<item uid="17"/>
+								<item uid="18"/>
+								<item uid="19"/>
+								<entity name='"Total_no._of_Members"'/>
+								<item uid="13"/>
+								<entity name='"Discontinuation_Rate_(Priority_Plus)"'/>
+								<entity name="Priority_to_Priority_Plus"/>
+								<entity name="Basic_to_Priority"/>
+								<entity name="Annual_Marketing_Spend"/>
+								<entity name="Basic_Member"/>
+								<entity name="Total_Discontinuations"/>
+								<item uid="20"/>
+								<entity name="Priority_Plus_Member"/>
+								<item uid="1"/>
+								<item uid="14"/>
+								<entity name='"Economic_factor_(Market_Spend)"'/>
+								<item uid="4"/>
+								<item uid="11"/>
+								<entity name='"Discontinuation_Rate_(Basic)"'/>
+								<item uid="21"/>
+								<entity name='"Discontinuation_Rate_(Priority)"'/>
+								<item uid="12"/>
+								<item uid="22"/>
+								<entity name="Time_Factor"/>
+								<entity name="Marketing_Acquired_Customers"/>
+								<item uid="24"/>
+								<entity name="Potential_Word_of_Mouth_Members"/>
+								<item uid="2"/>
+								<item uid="25"/>
+								<entity name='"Word_of_Mouth_(Factor)"'/>
+								<item uid="3"/>
+								<item uid="26"/>
+								<entity name="Marketing_Impact_Factor"/>
+								<entity name="Priority_Member"/>
+								<item uid="15"/>
+								<entity name="Customer_Acquisition_Rate"/>
+								<item uid="10"/>
+								<item uid="9"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name='"Discontinuation_Rate_(Basic)"'/>
+								<entity name="Loyalty_Factor"/>
+								<item uid="20"/>
+								<entity name='"Discontinuation_Rate_(Priority)"'/>
+								<item uid="21"/>
+								<entity name='"Discontinuation_Rate_(Priority_Plus)"'/>
+								<entity name="Total_Discontinuations"/>
+								<item uid="10"/>
+								<item uid="22"/>
+								<item uid="24"/>
+								<item uid="25"/>
+								<item uid="26"/>
+								<item uid="9"/>
+								<item uid="15"/>
+							</isee:highlight_list>
+						</isee:model_view>
+						<isee:annotation launcher_label="" show_by_default="true" hide_launcher="true" uid="73" x="622" y="542">
+							<popup x="25.5" y="237" width="323" height="161">
+								<text>Not all customers what enter the EIC 
+space stay there. Some members leave
+ EIC due to less loyalty.
+
+Here, there are 3 flows, one each for
+discontinuation rate for each membership level. These rates are 
+influenced by a loyalty factor.
+</text>
+							</popup>
+						</isee:annotation>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view uid="74" x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="533" center_y="300" locked_view="true" transparent="true" use_visible_list="true">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<item uid="9"/>
+								<item uid="10"/>
+								<entity name="Basic_Member"/>
+								<entity name="Total_Discontinuations"/>
+								<item uid="15"/>
+								<item uid="24"/>
+								<entity name='"Discontinuation_Rate_(Basic)"'/>
+								<item uid="11"/>
+								<item uid="4"/>
+								<item uid="14"/>
+								<item uid="27"/>
+								<item uid="25"/>
+								<item uid="2"/>
+								<entity name="Potential_Word_of_Mouth_Members"/>
+								<entity name="Basic_to_Priority"/>
+								<entity name="Annual_Marketing_Spend"/>
+								<entity name="Priority_Member"/>
+								<item uid="26"/>
+								<entity name="Marketing_Impact_Factor"/>
+								<entity name='"Economic_factor_(Market_Spend)"'/>
+								<entity name='"Total_no._of_Members"'/>
+								<entity name="No_of_Members_to_cover_Variable_Cost"/>
+								<entity name="Customer_Acquisition_Rate"/>
+								<item uid="3"/>
+								<entity name='"Word_of_Mouth_(Factor)"'/>
+								<item uid="19"/>
+								<item uid="8"/>
+								<item uid="17"/>
+								<entity name="Priority_to_Priority_Plus"/>
+								<item uid="13"/>
+								<entity name='"Discontinuation_Rate_(Priority_Plus)"'/>
+								<entity name="Loyalty_Factor"/>
+								<item uid="21"/>
+								<entity name='"Discontinuation_Rate_(Priority)"'/>
+								<entity name="No_of_Service_Representatives"/>
+								<item uid="18"/>
+								<item uid="7"/>
+								<item uid="20"/>
+								<entity name="Profitable_Load"/>
+								<entity name='"EIC_Optimal_Load_(Customer_Satisfaction)"'/>
+								<entity name="Time_Factor"/>
+								<entity name="Marketing_Acquired_Customers"/>
+								<item uid="22"/>
+								<item uid="12"/>
+								<item uid="23"/>
+								<entity name="Priority_Plus_Member"/>
+								<item uid="1"/>
+								<entity name="No_of_Members_to_cover_Fixed_Cost"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="No_of_Members_to_cover_Variable_Cost"/>
+								<entity name="No_of_Service_Representatives"/>
+								<item uid="7"/>
+								<entity name='"EIC_Optimal_Load_(Customer_Satisfaction)"'/>
+								<item uid="8"/>
+								<item uid="23"/>
+								<entity name="No_of_Members_to_cover_Fixed_Cost"/>
+								<entity name="Profitable_Load"/>
+								<item uid="27"/>
+							</isee:highlight_list>
+						</isee:model_view>
+						<isee:annotation launcher_label="" show_by_default="true" hide_launcher="true" uid="75" x="864" y="300">
+							<popup x="780.5" y="175" width="238" height="107">
+								<text>EIC has some cost structures as well.
+
+These are the converters that compute the optimal load and profitable load
+using other constant and graphical variables.</text>
+							</popup>
+						</isee:annotation>
+					</view>
+				</isee:story>
+			</isee:stories>
+		</views>
+	</model>
+</xmile>
+
