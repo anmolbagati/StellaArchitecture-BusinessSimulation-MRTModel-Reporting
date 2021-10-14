@@ -3,7 +3,7 @@
 Brief Overview:
 -Analysing, designing and developing a DSS to support a strategic decision task;
 -Documenting the details and dynamics of the DSS;
--Presenting the DSS to decision makers in ways they can understand; and
+-Presenting the DSS to decision makers(Top management) in ways they can understand; and
 -Manipulation of the DSS to accommodate the decision maker’s changing requirements.
 
 Report simulates the starting of an organisation based on the scenario and the DSS plays out that scenario to see feasability of the current company dynamics.
